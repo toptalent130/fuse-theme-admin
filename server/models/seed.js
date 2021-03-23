@@ -9,9 +9,9 @@ const superadmin = {
     permission: 'superadmin',
     verified: true
 };
-User.findAll().then((result)=>{
+// User.findAll().then((result)=>{
     // console.log(result)
-    if(!result.length){
+    // if(!result.length){
         User.create(superadmin)
             .then(() => {
                 console.log("superadmin was created");
@@ -19,7 +19,7 @@ User.findAll().then((result)=>{
         .catch(err => {
             console.log(err);
         });
-    } else {
-        console.log('superadmin is already existed')
-    }
-})
+    // } else {
+    //     console.log('superadmin is already existed')
+    // }
+// })

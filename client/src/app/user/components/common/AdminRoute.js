@@ -3,25 +3,25 @@ import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const AdminRoute = ({ component: Component, admin, ...rest }) => (
+const AdminRoute = ({ component: Component, manager, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      admin.isADMIN === true ? (
+      manager.isADMIN === true ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/admin" />
+        <Redirect to="/manager" />
       )
     }
   />
 );
 
 AdminRoute.propTypes = {
-  admin: PropTypes.object.isRequired
+  manager: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  admin: state.admin
+  manager: state.manager
 });
 
 export default connect(mapStateToProps)(AdminRoute);

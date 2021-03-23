@@ -11,7 +11,7 @@ import jwtService from 'app/services/jwtService';
 
 export const setUserDataAuth0 = tokenData => async dispatch => {
 	const user = {
-		role: ['admin'],
+		role: ['manager'],
 		from: 'auth0',
 		data: {
 			displayName: tokenData.username || tokenData.name,
@@ -26,7 +26,23 @@ export const setUserDataAuth0 = tokenData => async dispatch => {
 
 	return dispatch(setUserData(user));
 };
+export const setUserDataAuth1 = tokenData => async dispatch => {
+	const user = {
+		role: ['admin'],
+		from: 'auth1',
+		data: {
+			displayName: tokenData.username || tokenData.name,
+			photoURL: tokenData.picture,
+			email: tokenData.email,
+			settings:
+				tokenData.user_metadata && tokenData.user_metadata.settings ? tokenData.user_metadata.settings : {},
+			shortcuts:
+				tokenData.user_metadata && tokenData.user_metadata.shortcuts ? tokenData.user_metadata.shortcuts : []
+		}
+	};
 
+	return dispatch(setUserData(user));
+};
 export const setUserDataFirebase = (user, authUser) => async dispatch => {
 	if (
 		user &&
@@ -55,7 +71,7 @@ export const createUserSettingsFirebase = authUser => async (dispatch, getState)
 	const user = _.merge({}, guestUser, {
 		uid: authUser.uid,
 		from: 'firebase',
-		role: ['admin'],
+		role: ['manager'],
 		data: {
 			displayName: authUser.displayName,
 			email: authUser.email,

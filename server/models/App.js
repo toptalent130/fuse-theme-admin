@@ -6,7 +6,10 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         allowNull: false
       },
-      private_key: {
+      app_id: {
+        type: Sequelize.STRING
+      },
+      app_secret: {
         type: Sequelize.STRING
       },
       appname: {

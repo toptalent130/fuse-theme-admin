@@ -2,6 +2,7 @@ import MomentUtils from '@date-io/moment';
 import FuseLayout from '@fuse/core/FuseLayout';
 import FuseTheme from '@fuse/core/FuseTheme';
 import history from '@history';
+import '@fake-db';
 import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { create } from 'jss';
@@ -14,7 +15,7 @@ import AppContext from './AppContext';
 import routes from './fuse-configs/routesConfig';
 import store from './store';
 import './App.css';
-import jwt_decode from 'jwt-decode';
+// import jwt_decode from 'jwt-decode';
 import { ConfirmProvider } from 'material-ui-confirm';
 import { Auth } from './auth';
 

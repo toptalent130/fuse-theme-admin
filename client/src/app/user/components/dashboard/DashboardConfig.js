@@ -1,16 +1,15 @@
-import Dashboard from './Dashboard';
+import React from 'react';
 
 const DashboardConfig = {
 	settings: {
 		layout: {
-			config: {
-			}
+			config: {}
 		}
 	},
 	routes: [
 		{
 			path: '/dashboard',
-			component: Dashboard
+			component: React.lazy(() => import('./AnalyticsDashboardApp'))
 		}
 	]
 };

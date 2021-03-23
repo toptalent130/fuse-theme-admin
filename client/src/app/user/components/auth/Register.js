@@ -81,11 +81,11 @@ class Register extends Component {
             <div className="row" style={{display: 'flex'}}>
               <div className="welcome container text-center">
                 <h1>
-                    Welcome to Expert Invest
+                  Welcome To<br/>Expert Invest
                 </h1>
                 <hr/>
                 <p>
-                  Powerful and professional admin template for Web Applications, CRM, CMS, Admin Panels and more.
+                  Algo Trading Development
                 </p>
               </div>
               <div className="register container">

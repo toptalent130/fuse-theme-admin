@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logoutUser } from 'app/user/actions/authActions';
@@ -15,7 +15,6 @@ function UserMenu(props) {
 	const dispatch = useDispatch();
 	const user = useSelector(({ user }) => user.auth.user);
 	const history = props.history;
-
 	const [userMenu, setUserMenu] = useState(null);
 
 	const userMenuClick = event => {
@@ -25,7 +24,6 @@ function UserMenu(props) {
 	const userMenuClose = () => {
 		setUserMenu(null);
 	};
-
 	return (
 		<>
 			<Button className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6" onClick={userMenuClick}>

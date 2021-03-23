@@ -24,4 +24,5 @@ router.post('/get_all_users', (req, res)=>{
         }
     })
 });
+
 module.exports = router;

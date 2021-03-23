@@ -8,7 +8,7 @@ import TradingHeader from './TradingHeader';
 import TradingList from './TradingList';
 import * as Actions from './store/actions';
 import reducer from './store/reducers';
-import Paper from '@material-ui/core/Paper';
+// import Paper from '@material-ui/core/Paper';
 import TradingDialog from './TradingDialog';
 
 function TradingApp(props) {
@@ -24,7 +24,7 @@ function TradingApp(props) {
 		dispatch(Actions.getContacts({id}));
 	}, [dispatch, routeParams]);
 
-	console.log('route: ', routeParams);
+	// console.log('route: ', routeParams);
 	return (
 		<>
 			<FusePageSimple

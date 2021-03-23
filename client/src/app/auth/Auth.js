@@ -1,11 +1,11 @@
 import FuseSplashScreen from '@fuse/core/FuseSplashScreen';
-import auth0Service from 'app/services/auth0Service';
-import firebaseService from 'app/services/firebaseService';
-import jwtService from 'app/services/jwtService';
+// import auth0Service from 'app/services/auth0Service';
+// import firebaseService from 'app/services/firebaseService';
+// import jwtService from 'app/services/jwtService';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
-import { hideMessage, showMessage } from 'app/store/fuse/messageSlice';
+// import { hideMessage, showMessage } from 'app/store/fuse/messageSlice';
 import jwt_decode from 'jwt-decode';
 
 import { setCurrentUser, logoutUser } from 'app/user/actions/authActions';
@@ -13,7 +13,8 @@ import { withRouter } from 'react-router-dom';
 
 
 let user_list = ['/', '/dashboard', '/profile', '/login', '/register', '/servers'];
-let admin_list = [...user_list, ...['/tradings', 'robots', 'plans']];
+let admin_list = [...user_list, ...['/tradings', '/robots', '/plans']];
+let manager_list = [...user_list, ...['/tradings', '/robots', '/plans']];
 
 class Auth extends Component {
 	constructor(props) {
@@ -44,6 +45,10 @@ class Auth extends Component {
 					}
 				} else if(decoded.permission === 'admin') {
 					if(!admin_list.includes(this.props.location.pathname)) {
+						this.props.history.push('/');
+					}
+				} else if(decoded.permission === 'manager') {
+					if(!manager_list.includes(this.props.location.pathname)) {
 						this.props.history.push('/');
 					}
 				}

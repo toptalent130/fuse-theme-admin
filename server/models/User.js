@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       last_login: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE,
       },
       last_login_ip: {
         type: Sequelize.STRING

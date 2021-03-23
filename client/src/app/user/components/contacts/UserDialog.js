@@ -17,6 +17,10 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import {
 	updateContact,
 	addContact,
@@ -32,13 +36,14 @@ const defaultFormState = {
 	last_name: '',
 	email: '',
 	permission: '',
+	password: '',
 	avatar: 'assets/images/avatars/profile.jpg'
 };
 
 function UserDialog(props) {
 	const dispatch = useDispatch();
 	const contactDialog = useSelector(({ contactsApp }) => contactsApp.contacts.contactDialog);
-
+	// const errors = useSelector(({ user }) => user.errors);
 	const { form, handleChange, setForm } = useForm(defaultFormState);
 
 	const initDialog = useCallback(() => {
@@ -60,7 +65,12 @@ function UserDialog(props) {
 			});
 		}
 	}, [contactDialog.data, contactDialog.type, setForm]);
-
+	const [show, setShow] = React.useState({
+		showPassword: false
+	  });
+	const handleClickShowPassword = () => {
+		setShow({ showPassword: !show.showPassword });
+	  };
 	useEffect(() => {
 		/**
 		 * After Dialog Open
@@ -128,38 +138,33 @@ function UserDialog(props) {
 			<form noValidate onSubmit={handleSubmit} className="flex flex-col md:overflow-hidden">
 				<DialogContent classes={{ root: 'p-24' }}>
 					<div className="flex">
-						<div className="min-w-48 pt-20">
+						<div className="pt-20 min-w-48">
 							<Icon color="action">account_circle</Icon>
 						</div>
 
 						<TextField
-							className="mb-24"
+							className="mb-24 mr-2"
 							label="First Name"
 							autoFocus
-							id="name"
+							id="first_name"
 							name="first_name"
 							value={form.first_name}
 							onChange={handleChange}
 							variant="outlined"
-							fullWidth
 							error={form.first_name === ''}
 						/>
-					</div>
 
-					<div className="flex">
-						<div className="min-w-48 pt-20" />
 						<TextField
-							className="mb-24"
+							className="mb-24 ml-2"
 							label="Last Name"
 							id="lastName"
 							name="last_name"
 							value={form.last_name}
 							onChange={handleChange}
 							variant="outlined"
-							fullWidth
+							error={form.last_name === ''}
 						/>
 					</div>
-
 					<div className="flex">
 						<div className="min-w-48 pt-20">
 							<Icon color="action">email</Icon>
@@ -175,6 +180,38 @@ function UserDialog(props) {
 							fullWidth
 							error = {!emailVali}
 						/>
+					</div>
+
+					<div className="flex">
+						<div className="min-w-48 pt-20">
+							<Icon color="action">lock</Icon>
+						</div>
+						<FormControl variant="outlined" className="w-full">
+							<InputLabel id="password">Password</InputLabel>
+							<OutlinedInput
+								className="mb-24"
+								labelId="password"
+								label="password"
+								id="password"
+								name="password"
+								value={form.password}
+								onChange={handleChange}
+								type={show.showPassword ? 'text' : 'password'}
+								variant="outlined"
+								fullWidth
+								error={form.password === ''}
+								endAdornment={
+									<InputAdornment position="end">
+									<IconButton
+										aria-label="toggle password visibility"
+										onClick={handleClickShowPassword}
+									>
+										{show.showPassword ? <Visibility /> : <VisibilityOff />}
+									</IconButton>
+									</InputAdornment>
+								}
+							/>
+						</FormControl>
 					</div>
 
 					<div className="flex">
@@ -195,6 +232,7 @@ function UserDialog(props) {
 							>
 								<MenuItem value='user'>user</MenuItem>
 								<MenuItem value='admin'>admin</MenuItem>
+								<MenuItem value='manager'>manager</MenuItem>
 								<MenuItem value='superadmin'>superadmin</MenuItem>
 							</Select>
 						</FormControl>

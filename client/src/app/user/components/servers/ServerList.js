@@ -89,7 +89,7 @@ function ServerList(props) {
 							onClick={() => {
 								let option = {
 									title: <span style={{fontSize: '20px'}}>Are you sure?</span>,
-									description: <span style={{fontSize: '16px'}}>This user will be premanently deleted!</span>,
+									description: <span style={{fontSize: '16px'}}>This server will be canceled!</span>,
 									cancellationText: <span style={{fontSize: '16px'}}>No</span>,
 									confirmationText: <span style={{fontSize: '16px'}}>Yes</span>,
 									confirmationButtonProps: {variant: "contained", style: {margin: '0 10px 10px 0', background: 'rgb(20, 30, 60)'}},

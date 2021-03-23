@@ -7,10 +7,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TradingTable from './TradingTable';
 import * as Actions from './store/actions';
-import { removeContact, updateContact } from './store/actions'
-import Button from '@material-ui/core/Button';
+import { updateContact } from './store/actions'
+// import Button from '@material-ui/core/Button';
 
 import { useConfirm } from 'material-ui-confirm';
+import PlanApp from '../plans/PlanApp';
 
 function TradingList(props) {
 	const dispatch = useDispatch();
@@ -45,8 +46,18 @@ function TradingList(props) {
 				sortable: true
 			},
 			{
+				Header: 'Plan Description',
+				accessor: 'plan_description',
+				sortable: true
+			},
+			{
 				Header: 'Robot',
 				accessor: 'robot_id',
+				sortable: true
+			},
+			{
+				Header: 'Robot Description',
+				accessor: 'robot_description',
 				sortable: true
 			},
 			{
@@ -70,12 +81,19 @@ function TradingList(props) {
 				width: 128,
 				sortable: false,
 				Cell: ({ row }) => {
-					return (
-						<div className="flex items-center" 
+					return (row.values.canceled_time === null) ? 
+					 (
+						<div className="flex items-center"
 							onClick={() => {dispatch(Actions.openEditContactDialog(row.original))}}
 						>
 							<IconButton>
 								<Icon>edit</Icon>
+							</IconButton>
+						</div>
+					) : (
+						<div className="flex items-center">
+							<IconButton>
+								<Icon className="text-red-200">edit</Icon>
 							</IconButton>
 						</div>
 					)
@@ -87,12 +105,13 @@ function TradingList(props) {
 				width: 128,
 				sortable: false,
 				Cell: ({ row }) => {
-					return (
+					return (row.values.canceled_time === null) ? 
+					 (
 						<div className="flex items-center"
 							onClick={() => {
 								let option = {
 									title: <span style={{fontSize: '20px'}}>Are you sure?</span>,
-									description: <span style={{fontSize: '16px'}}>This user will be premanently deleted!</span>,
+									description: <span style={{fontSize: '16px'}}>This trading will be canceled!</span>,
 									cancellationText: <span style={{fontSize: '16px'}}>No</span>,
 									confirmationText: <span style={{fontSize: '16px'}}>Yes</span>,
 									confirmationButtonProps: {variant: "contained", style: {margin: '0 10px 10px 0', background: 'rgb(20, 30, 60)'}},
@@ -113,6 +132,12 @@ function TradingList(props) {
 								<Icon>cancel</Icon>
 							</IconButton>
 						</div>
+					) : (
+						<div className="flex items-center">
+							<IconButton>
+								<Icon className="text-red-200">cancel</Icon>
+							</IconButton>
+						</div>
 					)
 				}
 			}
@@ -128,9 +153,16 @@ function TradingList(props) {
 			}
 			return FuseUtils.filterArrayByString(arr, _searchText);
 		}
-
 		if (contacts) {
 			let data = contacts.map(ele => {
+				robots.map(robot=>{
+					if(robot.id === ele.robot_id)
+					ele = {...ele, robot_description: robot.description}
+				});
+				plans.map(plan=>{
+					if(plan.id === ele.plan_id)
+						ele = {...ele, plan_description: plan.description}
+				});
 				for(let i=0; i<users.length; i++) {
 					if(ele.manager_id === users[i].id) {
 						return {...ele, first_name: users[i].first_name};
@@ -141,7 +173,7 @@ function TradingList(props) {
 			
 			setFilteredData(getFilteredArray(data, searchText));
 		}
-	}, [contacts, searchText]);
+	}, [contacts, robots, plans, searchText]);
 
 	if (!filteredData) {
 		return null;

@@ -12,6 +12,7 @@ function Navigation(props) {
 
 	let role = 1;
 	if(permission === 'superadmin') role = 3;
+	else if(permission === 'manager') role = 2;
 	else if(permission === 'admin') role = 2;
 
 	for(let i=0; i<navigation.length; i++) {

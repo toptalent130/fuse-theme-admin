@@ -14,8 +14,9 @@ module.exports = async (to, content) => {
       {
         "From": {
           // "Email": "www0327333@gmail.com",
+          "Email": "support@expertinvest.co.il",
           // "Email": "tomertvc@gmail.com",
-          "Email": "tomer@expertinvest.co.il",
+          // "Email": "tomer@expertinvest.co.il",
           "Name": "Expert Ivnest Team"
         },
         "To": [

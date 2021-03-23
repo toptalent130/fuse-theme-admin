@@ -18,6 +18,7 @@ const validateRegisterInput = require('../validation/register');
 const validateLoginInput = require('../validation/login');
 const validateProfileUpdate = require('../validation/profile_update');
 const validatePasswordInput = require('../validation/password');
+const validateChangePasswordInput = require('../validation/change_password');
 // Load User model
 const db = require('../models/index');
 const User = db.User;
@@ -42,8 +43,8 @@ router.post('/register', (req, res) => {
         d: 'mm' // Default
       });
       let role;
-      if(req.body.role === "admin"){
-        role = 'admin';
+      if(req.body.role === "manager"){
+        role = 'manager';
       } else if(req.body.role === "superadmin"){
         role = 'superadmin';
       } else {
@@ -171,37 +172,39 @@ router.post('/login', (req, res) => {
             }
           }
           bcrypt.compare(password, userr.password).then(isMatch => {
-            if (isMatch) {
-              // User Matched
-              const payload = { id: userr.id, email: userr.email, first_name: userr.first_name, last_name: userr.last_name, avatar: userr.avatar, permission: userr.permission, verified: userr.verified }; // Create JWT Payload
-              // Sign Token
-              jwt.sign(
-                payload,
-                keys.secretOrKey,
-                { expiresIn: 3600 },
-                (err, token) => {
-                  res.json({
-                    success: true,
-                    token: 'Bearer ' + token
-                  });
-                }
-              );
-            } else {
-              errors.password = 'Password incorrect';
-              return res.status(400).json(errors);
-            }
+            const now = new Date();
+            User.update({last_login: now}, {where: { id: userr.id }}).then(()=>{
+              if (isMatch) {
+                // User Matched
+                const payload = { id: userr.id, email: userr.email, first_name: userr.first_name, last_name: userr.last_name, avatar: userr.avatar, permission: userr.permission, verified: userr.verified }; // Create JWT Payload
+                // Sign Token
+                jwt.sign(
+                  payload,
+                  keys.secretOrKey,
+                  { expiresIn: 3600 },
+                  (err, token) => {
+                    res.json({
+                      success: true,
+                      token: 'Bearer ' + token
+                    });
+                  }
+                );
+              } else {
+                errors.password = 'Password incorrect';
+                return res.status(400).json(errors);
+              }
+            });
           });
         });
 });
 router.post('/change_password', (req, res)=>{
-  // const { errors, isValid } = validatePasswordInput(req.body);
-  // if (!isValid) {
-  //   return res.status(400).json(errors);
-  // }
+  const { errors, isValid } = validateChangePasswordInput(req.body);
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   User.findAll({where: { id: req.body.id }}).then(user => {
     // Check for user
     if (!user.length) {
-      let errors = {};
       errors.email = 'User not found';
       return res.status(404).json(errors);
     }
@@ -209,7 +212,7 @@ router.post('/change_password', (req, res)=>{
     bcrypt.compare(req.body.current_password, userr.password).then(isMatch => {
       if (isMatch) {
         bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(req.body.password, salt, (err, hash) => {
+          bcrypt.hash(req.body.new_password, salt, (err, hash) => {
             if (err) throw err;
             User.update({password: hash}, {where: { id: req.body.id }}).then((result)=>{
               res.json({
@@ -219,9 +222,8 @@ router.post('/change_password', (req, res)=>{
           });
         });
       } else {
-        res.json({
-          success: false,
-        });
+        errors.current_password = 'current password is wrong';
+        return res.status(404).json(errors)
       }
     });
   });
@@ -291,7 +293,6 @@ router.post('/update_profile', upload.single('avatar'), (req, res) => {
         permission: userr.permission, 
         verified: userr.verified,
       };
-      
       User.update({first_name: first_name, last_name: last_name, avatar: avatar_path}, {where: { email: req.body.email }}).then((result)=>{
         jwt.sign(
           payload,
@@ -350,13 +351,17 @@ router.post('/update_user', (req, res) => {
       let first_name = req.body.first_name;
       let last_name = req.body.last_name;
       let permission = req.body.permission;
-      
-      User.update(
-        {first_name: first_name, last_name: last_name, permission: permission}, 
-        {where: { email: req.body.email }}
-      ).then((result)=>{
-        res.json({
-          success: true,
+      let password = req.body.password;
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err, hash) => {
+          User.update(
+            {first_name: first_name, last_name: last_name, permission: permission, password: hash}, 
+            {where: { email: req.body.email }}
+          ).then((result)=>{
+            res.json({
+              success: true,
+            });
+          });
         });
       });
     }
@@ -382,6 +387,11 @@ router.post('/delete_user', async (req, res) => {
 });
 
 router.post('/add_user', (req, res) => {
+  // const { errors, isValid } = validateRegisterInput(req.body);
+  // // Check Validation
+  // if (!isValid) {
+  //   return res.status(400).json(errors);
+  // }
   User.findAll({ where: { email: req.body.email }}).then(user => {
     if (user.length) {
       res.json({success: false});
@@ -397,8 +407,9 @@ router.post('/add_user', (req, res) => {
         last_name: req.body.last_name,
         email: req.body.email,
         avatar,
-        password: 'apple.123',
+        password: req.body.password,
         permission: req.body.permission,
+        verified: true
       };
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -406,23 +417,12 @@ router.post('/add_user', (req, res) => {
           newUser.password = hash;
           User.create(newUser).then(nuser => {
             const nuserr = nuser;
-            const content = {
-              Subject: "Confirm Email",
-              HTMLPart: "<a href=\'http://"+CLIENT_ORIGIN+"/confirmed/"+nuserr.id+"\'>Click to confirm email</a>",      
-              TextPart: "Copy and paste this link: "+CLIENT_ORIGIN+"/confirm/"+nuserr.id,
-              CustomID: "CustomID"
-            }
-            sendEmail(req.body.email, content);
-            res.json({success: true, data: {avatar: avatar, id: nuserr.dataValues.id}});
-            // sendEmail(req.body.email, content).then(()=>{
-            //     res.json({success: true, data: {avatar: avatar}});
-            //   }).catch(err => {
-            //     res.json({success: false, data: {avatar: avatar}});
-            //   })
+              res.json({success: true, data: {avatar: avatar, id: nuserr.dataValues.id}});                              
+            }).catch(err => {
+              res.json({success: false, data:{}});
+            })
           })
-          .catch(err => console.log(err));
         });
-      });
     }
   });
 });

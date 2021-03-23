@@ -30,7 +30,8 @@ CREATE TABLE `apps` (
   `reported` tinyint(4) DEFAULT 0,
   `createdAt` datetime DEFAULT NULL,
   `updatedAt` datetime DEFAULT NULL,
-  `private_key` varchar(1000) DEFAULT NULL,
+  `app_id` varchar(1000) DEFAULT NULL,
+  `app_secret` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
@@ -132,3 +133,6 @@ CREATE TABLE `users` (
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+/*Seed superadmin into user table*/
+INSERT INTO `users` (`first_name`, `last_name`, `email`, `password`, `permission`, `verified`) VALUES ('super', 'admin', 'superadmin@gmail.com', '$2a$10$zAa7qSC.ZzP.n/61eGkq9uzmlZkQaMd09I6hnpDWH6/RqobBCTSC6', 'superadmin', true);

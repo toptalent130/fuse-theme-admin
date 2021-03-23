@@ -81,6 +81,10 @@ export const addContact = (newContact) => dispatch => {
     })
     .catch(err =>{
       console.log('error: ', err);
+	//   dispatch({
+	// 	type: 'GET_ERRORS',
+	// 	payload: err.response.data
+	//   })
 	});
 }
 

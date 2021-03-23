@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import React, { useState } from 'react';
 import AboutTab from './tabs/AboutTab';
 import { useSelector } from 'react-redux';
-
 const useStyles = makeStyles(theme => ({
 	layoutHeader: {
 		height: 200,
@@ -21,7 +20,6 @@ const useStyles = makeStyles(theme => ({
 function Profile() {
 	const classes = useStyles();
 	const user = useSelector(({ user }) => user.auth.user);
-
 	return (
 		<FusePageSimple
 			classes={{

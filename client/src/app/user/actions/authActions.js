@@ -30,16 +30,11 @@
     axios
       .post(`${SERVER_URL}/api/users/login`, userData)
       .then(res => {
-        // Save to localStorage
         const { token } = res.data;
-        // Set token to ls
-        localStorage.setItem('jwtToken', token);
-        // Set token to Auth header
-        setAuthToken(token);
-        // Decode token to get user data
         const decoded = jwt_decode(token);
-        // Set current user
         dispatch(setCurrentUser(decoded));
+        setAuthToken(token);
+        localStorage.setItem('jwtToken', token);
       })
       .catch(err =>{
         dispatch({
@@ -160,7 +155,12 @@ export const updateUserPassword = (userData) => dispatch => {
         });
       }
     })
-  
+    .catch(err =>{
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      });
+    });
   }
 
 export function setDisplayUpdateToast(data) {

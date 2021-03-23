@@ -1,13 +1,13 @@
 import { useForm } from '@fuse/hooks';
 import FuseUtils from '@fuse/utils/FuseUtils';
 import AppBar from '@material-ui/core/AppBar';
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -27,8 +27,8 @@ import {
 import {FaRobot} from 'react-icons/fa';
 import { GrPlan } from 'react-icons/gr';
 import {AiOutlineFieldNumber} from 'react-icons/ai';
-import {FaBusinessTime} from 'react-icons/fa';
-import {MdTimerOff} from 'react-icons/md';
+// import {FaBusinessTime} from 'react-icons/fa';
+// import {MdTimerOff} from 'react-icons/md';
 
 const defaultFormState = {
 	manager_id: -1,
@@ -45,7 +45,6 @@ function TradingDialog(props) {
 	const plans = useSelector(({ tradingsApp }) => tradingsApp.contacts.plans);
 
 	const { form, handleChange, setForm } = useForm(defaultFormState);
-
 	const initDialog = useCallback(() => {
 		/**
 		 * Dialog type: 'edit'
@@ -166,7 +165,7 @@ function TradingDialog(props) {
 								{
 									robots.map(ele => {
 										return (
-											<MenuItem key={ele.id} value={ele.id}>{ele.id}</MenuItem>
+											<MenuItem key={ele.id} value={ele.id}>{ele.id+"-"+ele.description}</MenuItem>
 										)
 									})
 								}
@@ -193,7 +192,7 @@ function TradingDialog(props) {
 								{
 									plans.map(ele => {
 										return (
-											<MenuItem key={ele.id} value={ele.id}>{ele.id}</MenuItem>
+											<MenuItem key={ele.id} value={ele.id}>{ele.id+"-"+ele.description}</MenuItem>
 										)
 									})
 								}

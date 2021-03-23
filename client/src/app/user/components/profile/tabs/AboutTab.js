@@ -15,7 +15,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { updateUserProfile, setDisplayUpdateToast, updateUserPassword } from '../../../actions/authActions';
-
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 const useStyles = makeStyles((theme) => ({
 	root: {
 	  '& > *': {
@@ -43,14 +50,19 @@ function AboutTab() {
 
 	const id = useSelector(({user}) => user.auth.user.id);
 	const displayText = useSelector(({user}) =>user.auth.displayText);
-
+	const errors = useSelector(({ user })=> user.errors);
 	const user = useSelector(({ user }) => user.auth.user);
 	const shouldToast = useSelector(({ user }) => user.auth.shouldDisplayUpdateToast);
-
+	const [show, setShow] = React.useState({
+		showPassword: false
+	  });
+	const handleClickShowPassword = () => {
+		setShow({ showPassword: !show.showPassword });
+	  };
 	useEffect(() => {
 		setFName(user.first_name);
 		setLName(user.last_name);
-	}, [user]);
+	}, [user,errors]);
 
 	useEffect(() => {
 		if(shouldToast) {
@@ -97,6 +109,7 @@ function AboutTab() {
 			id: id,
 			current_password: cPass,
 			new_password: nPass,
+			confirm_password: cnPass
 		}
 		dispatch(updateUserPassword(sendData))
 	}
@@ -104,9 +117,9 @@ function AboutTab() {
 	function canBeSubmittedInfo() {
 		return fName != '' && avatar != null;
 	}
-	function canBeSubmittedPassword() {
-		return cPass != '' && cnPass != '' && nPass != '' && cnPass === nPass;
-	}
+	// function canBeSubmittedPassword() {
+	// 	return cPass != '' && cnPass != '' && nPass != '' && cnPass === nPass;
+	// }
 
 
 	return (
@@ -129,7 +142,7 @@ function AboutTab() {
 						<CardContent>
 							<form className={classes.root} noValidate autoComplete="off">
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">First Name</Typography>
+									{/* <Typography className="font-bold mb-4 text-15">First Name</Typography> */}
 									<TextField 
 										id="id-first-name" 
 										label="first name" 
@@ -142,7 +155,7 @@ function AboutTab() {
 								</div>
 
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">Last Name</Typography>
+									{/* <Typography className="font-bold mb-4 text-15">Last Name</Typography> */}
 									<TextField 
 										id="id-second-name" 
 										label="last name" 
@@ -154,7 +167,7 @@ function AboutTab() {
 								</div>
 
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">Email</Typography>
+									{/* <Typography className="font-bold mb-4 text-15">Email</Typography> */}
 									<TextField 
 										id="id-email" 
 										label="email" 
@@ -198,48 +211,87 @@ function AboutTab() {
 						<CardContent>
 							<form className={classes.root} noValidate autoComplete="off">
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">Current Password</Typography>
-									<TextField 
-										id="id-current-password" 
-										label="Current Password" 
-										variant="outlined"
-										className="w-full"
-										value={cPass}
-										onChange={handleCPassChange}
-										type="password"
-										error={cPass == ''}
-									/>
+									{/* <Typography className="font-bold mb-4 text-15">Current Password</Typography> */}
+									<FormControl variant="outlined" className="w-full">
+										<InputLabel id="current-password">Current Password</InputLabel>
+										<OutlinedInput
+											labelId="current-password" 
+											label="Current Password" 
+											variant="outlined"
+											className="w-full"
+											value={cPass}
+											type={show.showPassword ? 'text' : 'password'}
+											onChange={handleCPassChange}
+											error={errors.current_password}
+											endAdornment={
+												<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={handleClickShowPassword}
+												>
+													{show.showPassword ? <Visibility /> : <VisibilityOff />}
+												</IconButton>
+												</InputAdornment>
+											}
+										/>
+										<FormHelperText className="text-red-600">{errors.current_password}</FormHelperText>
+									</FormControl>
 								</div>
 
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">New Password</Typography>
-									<TextField 
-										id="id-new-password" 
-										label="New Password" 
-										variant="outlined"
-										className="w-full"
-										value={nPass}
-										onChange={handleNPassChange}
-										type="password"
-										error={nPass == ''}
-									/>
+									<FormControl variant="outlined" className="w-full">
+										<InputLabel id="new-password">New Password</InputLabel>
+										<OutlinedInput
+											labelId="new-password" 
+											label="New Password" 
+											variant="outlined"
+											className="w-full"
+											value={nPass}
+											onChange={handleNPassChange}
+											type={show.showPassword ? 'text' : 'password'}
+											error={errors.new_password}
+											endAdornment={
+												<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={handleClickShowPassword}
+												>
+													{show.showPassword ? <Visibility /> : <VisibilityOff />}
+												</IconButton>
+												</InputAdornment>
+											}
+										/>
+									</FormControl>
+									<FormHelperText className="text-red-600">{errors.new_password}</FormHelperText>
 								</div>
 
 								<div className="mb-24 w-full">
-									<Typography className="font-bold mb-4 text-15">Confirm Password</Typography>
-									<TextField 
-										id="id-confirm-password" 
-										label="Confirm Password"
-										variant="outlined"
-										className="w-full"
-										value={cnPass}
-										onChange={handleCNPassChange}
-										type="password"
-										error={nPass != cnPass || cnPass == ''}
-									/>
+									<FormControl variant="outlined" className="w-full">
+										<InputLabel id="confirm-password">Confirm Password</InputLabel>
+										<OutlinedInput
+											id="confirm-password" 
+											label="Confirm Password"
+											variant="outlined"
+											className="w-full"
+											value={cnPass}
+											onChange={handleCNPassChange}
+											type={show.showPassword ? 'text' : 'password'}
+											error={errors.confirm_password}
+											endAdornment={
+												<InputAdornment position="end">
+												<IconButton
+													aria-label="toggle password visibility"
+													onClick={handleClickShowPassword}
+												>
+													{show.showPassword ? <Visibility /> : <VisibilityOff />}
+												</IconButton>
+												</InputAdornment>
+											}
+										/>
+										<FormHelperText className="text-red-600">{errors.confirm_password}</FormHelperText>
+									</FormControl>
 								</div>
-								<Button variant="contained" color="primary" onClick={handleSavePass}
-								disabled={!canBeSubmittedPassword()}>
+								<Button variant="contained" color="primary" onClick={handleSavePass}>
 									Change Password
 								</Button>
 							</form>
