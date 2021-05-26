@@ -1,5 +1,5 @@
-// const mailjet = require ('node-mailjet').connect('8244e719835365d03f77058ca7dfcc10', '9860cba58b6a7028465a15875825e174');
-const mailjet = require ('node-mailjet').connect('03c9150ac11402d921d7126519711ac7', 'a501283852994580f7a2bb5f2d7ae875');
+ const mailjet = require ('node-mailjet').connect('8244e719835365d03f77058ca7dfcc10', '9860cba58b6a7028465a15875825e174');
+//const mailjet = require ('node-mailjet').connect('03c9150ac11402d921d7126519711ac7', 'a501283852994580f7a2bb5f2d7ae875');
 // const mailjet = require ('node-mailjet').connect('03c9150ac11402d921d7126519711ac7', '9860cba58b6a7028465a15875825e174');
 
 module.exports = async (to, content) => {
@@ -13,11 +13,8 @@ module.exports = async (to, content) => {
     "Messages":[
       {
         "From": {
-          // "Email": "www0327333@gmail.com",
-          "Email": "support@expertinvest.co.il",
-          // "Email": "tomertvc@gmail.com",
-          // "Email": "tomer@expertinvest.co.il",
-          "Name": "Expert Ivnest Team"
+          "Email": "www0327333@gmail.com",
+          //"Name": "Expert Ivnest Team"
         },
         "To": [
           {
